@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+
+    <h2 class="mb-4">
+
+        Maintenance véhicules
+
+    </h2>
+
+    <table class="table table-striped">
+
+        <thead>
+
+            <tr>
+
+                <th>Véhicule</th>
+
+                <th>Description</th>
+
+                <th>Coût</th>
+
+                <th>Statut</th>
+
+                <th>Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for m in maintenances %}
+
+            <tr>
+
+                <td>
+                    {{ m.vehicle }}
+                </td>
+
+                <td>
+                    {{ m.description }}
+                </td>
+
+                <td>
+                    {{ m.cout_reparation }} FCFA
+                </td>
+
+                <td>
+                    {{ m.statut }}
+                </td>
+
+                <td>
+
+                    {% if m.statut == 'EN_COURS' %}
+
+                    <a href="{% url 'close_maintenance' m.id %}"
+                       class="btn btn-success btn-sm">
+
+                        Terminer
+
+                    </a>
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}
