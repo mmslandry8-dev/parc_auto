@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+
+    <h2 class="mb-4">
+        🚗 Liste des véhicules
+    </h2>
+
+    <div class="row">
+
+        {% for vehicle in vehicles %}
+
+        <div class="col-md-4 mb-4">
+
+            <div class="card shadow border-0">
+
+                <!-- IMAGE -->
+                <img src="{{ vehicle.image.url }}"
+                     class="card-img-top"
+                     style="height:200px; object-fit:cover;">
+
+                <div class="card-body">
+
+                    <h5>
+                        {{ vehicle.marque }} {{ vehicle.modele }}
+                    </h5>
+
+                    <p>
+                        {{ vehicle.prix_location }} FCFA / jour
+                    </p>
+
+                    <!-- BADGE STATUT -->
+                    <span class="badge bg-success">
+                        {{ vehicle.statut }}
+                    </span>
+
+                    <div class="mt-3">
+
+                        <a href="{% url 'vehicle_detail' vehicle.id %}"
+                           class="btn btn-sm btn-primary">
+
+                            Voir
+
+                        </a>
+
+                        {% if user.groups.all.0.name == 'ADMIN' %}
+
+                        <a href="{% url 'update_vehicle' vehicle.id %}"
+                           class="btn btn-sm btn-warning">
+
+                            Modifier
+
+                        </a>
+
+                        <a href="{% url 'delete_vehicle' vehicle.id %}"
+                           class="btn btn-sm btn-danger">
+
+                            Supprimer
+
+                        </a>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}
