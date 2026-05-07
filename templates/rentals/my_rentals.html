@@ -55,7 +55,41 @@
                 </td>
 
                 <td>
-                    {{ rental.statut }}
+
+                    {% if rental.statut == 'VALIDEE' %}
+
+                        <span class="badge bg-success">
+
+                            Validée
+
+                        </span>
+
+                    {% elif rental.statut == 'EN_ATTENTE' %}
+
+                        <span class="badge bg-warning">
+
+                        En attente
+
+                        </span>
+
+                    {% elif rental.statut == 'REFUSEE' %}
+
+                        <span class="badge bg-danger">
+
+                            Refusée
+
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge bg-secondary">
+
+                            Terminée
+
+                        </span>
+
+                    {% endif %}
+
                 </td>
 
                 <td>

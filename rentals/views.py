@@ -7,6 +7,7 @@ from django.shortcuts import (
 )
 
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 from .models import Rental
 from .forms import RentalForm
@@ -41,18 +42,95 @@ def create_rental(request, pk):
 
             rental.vehicle = vehicle
 
+            # =========================
+            # VERIFICATION VEHICULE
+            # =========================
+
+            # Véhicule vendu
+            if vehicle.statut == 'VENDU':
+
+                messages.error(
+                    request,
+                    "Ce véhicule est déjà vendu."
+                )
+
+                return redirect(
+                    'vehicle_detail',
+                    pk=vehicle.id
+                )
+
+            # Véhicule maintenance
+            if vehicle.statut == 'MAINTENANCE':
+
+                messages.error(
+                    request,
+                    "Ce véhicule est actuellement en maintenance."
+                )
+
+                return redirect(
+                    'vehicle_detail',
+                    pk=vehicle.id
+                )
+
+            # =========================
+            # VERIFICATION CONFLITS
+            # =========================
+
+            conflits = Rental.objects.filter(
+
+                vehicle=vehicle,
+
+                statut__in=[
+                    'EN_ATTENTE',
+                    'VALIDEE'
+                ],
+
+                date_debut__lte=rental.date_fin,
+
+                date_fin__gte=rental.date_debut
+
+            )
+
+            # Si conflit trouvé
+            if conflits.exists():
+
+                messages.error(
+                    request,
+                    "Ce véhicule est déjà réservé pour ces dates."
+                )
+
+                return redirect(
+                    'vehicle_detail',
+                    pk=vehicle.id
+                )
+
+            # =========================
             # CALCUL PRIX
+            # =========================
+
             nb_jours = (
                 rental.date_fin -
                 rental.date_debut
             ).days
 
+            # sécurité minimum 1 jour
+            if nb_jours <= 0:
+
+                nb_jours = 1
+
             rental.prix_total = (
+
                 nb_jours *
                 vehicle.prix_location
+
             )
 
             rental.save()
+
+            messages.success(
+                request,
+                "Réservation effectuée avec succès."
+            )
 
             return redirect('my_rentals')
 
@@ -64,6 +142,7 @@ def create_rental(request, pk):
             'vehicle': vehicle
         }
     )
+
 
 @login_required
 def my_rentals(request):
@@ -84,6 +163,7 @@ def my_rentals(request):
         }
     )
 
+
 @login_required
 @admin_required
 def validate_rental(request, pk):
@@ -97,10 +177,3 @@ def validate_rental(request, pk):
     rental.statut = 'VALIDEE'
 
     rental.save()
-
-    # VEHICULE LOUE
-    rental.vehicle.statut = 'LOUE'
-
-    rental.vehicle.save()
-
-    return redirect('admin_dashboard')

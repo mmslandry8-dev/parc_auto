@@ -12,6 +12,16 @@
             {{ vehicle.modele }}
         </h2>
 
+        {% if form.errors %}
+
+        <div class="alert alert-danger">
+
+            {{ form.errors }}
+
+        </div>
+
+        {% endif %}
+
         <form method="POST">
 
             {% csrf_token %}
@@ -24,6 +34,13 @@
 
             </button>
 
+            <a href="{% url 'vehicle_detail' vehicle.id %}"
+                class="btn btn-outline-dark">
+
+                Retour
+
+            </a>
+            
         </form>
 
     </div>
