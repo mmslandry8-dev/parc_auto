@@ -8,6 +8,7 @@ from .forms import VehicleForm
 from .models import Vehicle
 from django.contrib.auth.decorators import login_required
 
+from django.core.paginator import Paginator
 
 @login_required
 @admin_required
@@ -42,19 +43,80 @@ def add_vehicle(request):
 
 @login_required
 def vehicle_list(request):
+
     """
-    Liste des véhicules
-    visible par tous les utilisateurs connectés
+    Liste intelligente des véhicules
     """
 
     vehicles = Vehicle.objects.all()
 
+    # =========================
+    # RECHERCHE
+    # =========================
+
+    search = request.GET.get('search')
+
+    if search:
+
+        vehicles = vehicles.filter(
+
+            modele__icontains=search
+
+        ) | vehicles.filter(
+
+            marque__icontains=search
+
+        )
+
+    # =========================
+    # FILTRE TYPE
+    # =========================
+
+    vehicle_type = request.GET.get('type')
+
+    if vehicle_type:
+
+        vehicles = vehicles.filter(
+            type=vehicle_type
+        )
+
+    # =========================
+    # FILTRE STATUT
+    # =========================
+
+    statut = request.GET.get('statut')
+
+    if statut:
+
+        vehicles = vehicles.filter(
+            statut=statut
+        )
+
+    # =========================
+    # PAGINATION
+    # =========================
+
+    paginator = Paginator(
+        vehicles,
+        6
+    )
+
+    page_number = request.GET.get('page')
+
+    vehicles = paginator.get_page(
+        page_number
+    )
+
+    context = {
+
+        'vehicles': vehicles
+
+    }
+
     return render(
         request,
         'vehicles/vehicle_list.html',
-        {
-            'vehicles': vehicles
-        }
+        context
     )
 
 def vehicle_detail(request, pk):
