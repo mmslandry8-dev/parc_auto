@@ -18,10 +18,10 @@ urlpatterns = [
     ),
 
     # AGENT
-    path(
-        'agent-dashboard/',
-        views.agent_dashboard,
-        name='agent_dashboard'
-    ),
+    # path(
+    #     'agent-dashboard/',
+    #     views.agent_dashboard,
+    #     name='agent_dashboard'
+    # ),
 
 ]

@@ -98,3 +98,24 @@ body {
     max-width: 450px;
 
 }
+
+/* =========================
+   DASHBOARD
+========================= */
+
+.dashboard-card {
+
+    border-radius: 20px;
+
+    transition: 0.3s ease;
+
+    background: white;
+}
+
+.dashboard-card:hover {
+
+    transform: translateY(-5px);
+
+    box-shadow: 0px 10px 25px rgba(0,0,0,0.2);
+}
+

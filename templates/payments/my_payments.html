@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+
+    <h2 class="mb-4">
+
+        Mes paiements
+
+    </h2>
+
+    <table class="table table-striped">
+
+        <thead>
+
+            <tr>
+
+                <th>Véhicule</th>
+
+                <th>Montant</th>
+
+                <th>Méthode</th>
+
+                <th>Statut</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for payment in payments %}
+
+            <tr>
+
+                <td>
+                    {{ payment.rental.vehicle }}
+                </td>
+
+                <td>
+                    {{ payment.montant }} FCFA
+                </td>
+
+                <td>
+                    {{ payment.methode }}
+                </td>
+
+                <td>
+
+                    {% if payment.statut == 'PAYE' %}
+
+                        <span class="badge bg-success">
+
+                            PAYÉ
+
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge bg-warning">
+
+                            EN ATTENTE
+
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

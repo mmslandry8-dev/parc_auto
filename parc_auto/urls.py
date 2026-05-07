@@ -25,11 +25,9 @@ urlpatterns = [
     path('', include('dashboard.urls')),
     path('accounts/', include('accounts.urls')),
     path('vehicles/', include('vehicles.urls')),
-    
-    path(
-    'rentals/',
-    include('rentals.urls')
-),
+    path('rentals/', include('rentals.urls')),
+    path('payments/', include('payments.urls')),
+
 ]
 
 # MEDIA FILES

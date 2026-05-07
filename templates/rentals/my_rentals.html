@@ -26,6 +26,8 @@
 
                 <th>Statut</th>
 
+                <th>Paiement</th>
+
             </tr>
 
         </thead>
@@ -54,6 +56,16 @@
 
                 <td>
                     {{ rental.statut }}
+                </td>
+
+                <td>
+
+                    <a href="{% url 'create_payment' rental.id %}" class="btn btn-sm btn-dark">
+
+                        Payer
+
+                    </a>
+
                 </td>
 
             </tr>

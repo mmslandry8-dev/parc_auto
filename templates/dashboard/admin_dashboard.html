@@ -22,13 +22,15 @@
                 </li>
 
                 <li class="nav-item mb-2">
-                    <a class="nav-link text-white" href="#">
+                    <a class="nav-link text-white"
+                        href="{% url 'vehicle_list' %}">
                         Véhicules
                     </a>
                 </li>
 
                 <li class="nav-item mb-2">
-                    <a class="nav-link text-white" href="#">
+                    <a class="nav-link text-white"
+                        href="{% url 'my_rentals' %}">
                         Locations
                     </a>
                 </li>
@@ -57,71 +59,139 @@
             </h2>
 
             <!-- STATS -->
-            <div class="row">
+            <div class="row g-4">
 
-                <!-- CARD -->
+                <!-- VEHICULES -->
                 <div class="col-md-3">
 
-                    <div class="card shadow border-0 p-3">
+                    <div class="card shadow border-0 p-4 dashboard-card">
 
                         <h5>
-                            Véhicules
+                            🚗 Véhicules
                         </h5>
 
                         <h2>
-                            0
+                            {{ total_vehicles }}
                         </h2>
 
                     </div>
 
                 </div>
 
-                <!-- CARD -->
+                <!-- DISPONIBLES -->
                 <div class="col-md-3">
 
-                    <div class="card shadow border-0 p-3">
+                    <div class="card shadow border-0 p-4 dashboard-card">
 
                         <h5>
-                            Locations
+                            ✅ Disponibles
                         </h5>
 
                         <h2>
-                            0
+                            {{ available_vehicles }}
                         </h2>
 
                     </div>
 
                 </div>
 
-                <!-- CARD -->
+                <!-- LOUES -->
                 <div class="col-md-3">
 
-                    <div class="card shadow border-0 p-3">
+                    <div class="card shadow border-0 p-4 dashboard-card">
 
                         <h5>
-                            Ventes
+                            🔑 Loués
                         </h5>
 
                         <h2>
-                            0
+                            {{ rented_vehicles }}
                         </h2>
 
                     </div>
 
                 </div>
 
-                <!-- CARD -->
+                <!-- CLIENTS -->
                 <div class="col-md-3">
 
-                    <div class="card shadow border-0 p-3">
+                    <div class="card shadow border-0 p-4 dashboard-card">
 
                         <h5>
-                            Revenus
+                            👥 Clients
                         </h5>
 
                         <h2>
-                            0 FCFA
+                            {{ total_clients }}
                         </h2>
+
+                    </div>
+
+                </div>
+
+                <!-- LOCATIONS -->
+                <div class="col-md-4">
+
+                    <div class="card shadow border-0 p-4 dashboard-card">
+
+                        <h5>
+                            📅 Total locations
+                        </h5>
+
+                        <h2>
+                            {{ total_rentals }}
+                        </h2>
+
+                    </div>
+
+                </div>
+
+                <!-- EN ATTENTE -->
+                <div class="col-md-4">
+
+                    <div class="card shadow border-0 p-4 dashboard-card">
+
+                        <h5>
+                            ⏳ En attente
+                        </h5>
+
+                        <h2>
+                            {{ pending_rentals }}
+                        </h2>
+
+                    </div>
+
+                </div>
+
+                <!-- VALIDÉES -->
+                <div class="col-md-4">
+
+                    <div class="card shadow border-0 p-4 dashboard-card">
+
+                        <h5>
+                            ✔️ Validées
+                        </h5>
+
+                        <h2>
+                            {{ validated_rentals }}
+                        </h2>
+
+                    </div>
+
+                </div>
+
+                <!-- REVENUS -->
+                <div class="col-md-12">
+
+                    <div class="card shadow border-0 p-5 dashboard-card text-center">
+
+                        <h3>
+                            💰 Revenus Totaux
+                        </h3>
+
+                        <h1 class="display-4">
+                            {{ total_revenue }} FCFA
+                        </h1>
 
                     </div>
 

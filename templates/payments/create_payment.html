@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="card shadow p-4">
+
+        <h2>
+
+            Paiement réservation
+
+        </h2>
+
+        <h4 class="mb-4">
+
+            Montant :
+            {{ rental.prix_total }} FCFA
+
+        </h4>
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <button class="btn btn-dark">
+
+                Payer
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
