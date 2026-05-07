@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+
+    <h2>{{ customer.nom }}</h2>
+
+    <hr>
+
+    <h4>Locations</h4>
+
+    <ul>
+
+        {% for r in rentals %}
+
+            <li>
+                {{ r.vehicle }} - {{ r.statut }}
+            </li>
+
+        {% empty %}
+
+            <p>Aucune location</p>
+
+        {% endfor %}
+
+    </ul>
+
+    <h4>Achats</h4>
+
+    <ul>
+
+        {% for s in sales %}
+
+            <li>
+                {{ s.vehicle }} - {{ s.statut }}
+            </li>
+
+        {% empty %}
+
+            <p>Aucun achat</p>
+
+        {% endfor %}
+
+    </ul>
+
+</div>
+
+{% endblock %}

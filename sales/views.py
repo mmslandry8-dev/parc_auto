@@ -85,3 +85,17 @@ def validate_sale(request, pk):
     vehicle.save()
 
     return redirect('sales_list')
+
+@admin_required
+def pay_sale(request, pk):
+
+    sale = get_object_or_404(
+        Sale,
+        id=pk
+    )
+
+    sale.statut = 'PAYEE'
+
+    sale.save()
+
+    return redirect('sales_list')

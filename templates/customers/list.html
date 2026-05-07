@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+
+    <h2>Clients</h2>
+
+    <table class="table table-striped">
+
+        <thead>
+
+            <tr>
+
+                <th>Nom</th>
+
+                <th>Email</th>
+
+                <th>Téléphone</th>
+
+                <th>Statut</th>
+
+                <th>Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for c in customers %}
+
+            <tr>
+
+                <td>
+                    {{ c.nom }}
+                </td>
+
+                <td>
+                    {{ c.email }}
+                </td>
+
+                <td>
+                    {{ c.telephone }}
+                </td>
+
+                <td>
+
+                    {% if c.is_blocked %}
+
+                        <span class="badge bg-danger">
+
+                            Bloqué
+
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge bg-success">
+
+                            Actif
+
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    <a href="{% url 'customer_detail' c.id %}"
+                       class="btn btn-primary btn-sm">
+
+                        Voir
+
+                    </a>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

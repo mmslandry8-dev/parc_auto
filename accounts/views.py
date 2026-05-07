@@ -10,6 +10,9 @@ from django.contrib import messages
 
 from .utils import assign_user_role
 
+from customers.models import Customer
+
+
 def register(request):
     """
     Inscription d'un utilisateur CLIENT
@@ -30,6 +33,16 @@ def register(request):
             # user.groups.add(group)
             # ROLE PAR DÉFAUT
             assign_user_role(user, 'CLIENT')
+
+            Customer.objects.create(
+
+                user=user,
+
+                nom=user.username,
+
+                email=user.email
+
+            )
 
             return redirect('login')
 
