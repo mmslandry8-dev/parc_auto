@@ -1,27 +1,100 @@
+/* RESET */
+body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+/* NAVBAR */
+.navbar {
+    z-index: 999;
+}
+
 /* HERO SECTION */
 .hero {
-    height: 90vh;
-    background: url('/static/images/car-bg.jpg') center/cover no-repeat;
+
+    width: 100%;
+    height: 100vh;
+
+    background-image: url('/static/images/car-bg.jpg');
+
+    background-size: cover;
+    background-position: center;
+
     position: relative;
+
+    margin: 0;
+    padding: 0;
 }
 
+/* OVERLAY */
 .hero .overlay {
+
     position: absolute;
+
+    top: 0;
+    left: 0;
+
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.6);
+
+    background: rgba(0, 0, 0, 0.55);
+
 }
 
+/* CONTENT */
 .hero .content {
+
     position: relative;
     z-index: 2;
+
 }
 
 /* BACK TO TOP */
 #backToTop {
+
     position: fixed;
+
     bottom: 30px;
     right: 30px;
+
     display: none;
+
     z-index: 999;
+
+}
+
+/* AUTH PAGES */
+.auth-container {
+
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background:
+        linear-gradient(rgba(0,0,0,0.6),
+        rgba(0,0,0,0.6)),
+
+        url('/static/images/car-bgc.jpg');
+
+    background-size: cover;
+    background-position: center;
+
+    padding: 20px;
+
+}
+
+.auth-card {
+
+    background: white;
+
+    padding: 40px;
+
+    border-radius: 15px;
+
+    width: 100%;
+    max-width: 450px;
+
 }

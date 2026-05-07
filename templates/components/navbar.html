@@ -1,0 +1,99 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow fixed-top">
+    <div class="container">
+
+        <!-- LOGO -->
+        <a class="navbar-brand fw-bold" href="/">
+            🚗 ParcAuto
+        </a>
+
+        <!-- MENU MOBILE -->
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#nav"
+            aria-controls="nav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- LIENS -->
+        <div class="collapse navbar-collapse" id="nav">
+
+            <ul class="navbar-nav ms-auto">
+
+                <!-- TOUS -->
+                <li class="nav-item">
+                    <a class="nav-link" href="/">
+                        Accueil
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        Véhicules
+                    </a>
+                </li>
+
+                <!-- ADMIN -->
+                {% if user.is_authenticated and user.groups.all.0.name == 'ADMIN' %}
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'admin_dashboard' %}">
+                            Dashboard Admin
+                        </a>
+                    </li>
+
+                {% endif %}
+
+                <!-- AGENT -->
+                {% if user.is_authenticated and user.groups.all.0.name == 'AGENT' %}
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'agent_dashboard' %}">
+                            Dashboard Agent
+                        </a>
+                    </li>
+
+                {% endif %}
+
+                <!-- USER -->
+                {% if user.is_authenticated %}
+
+                    <li class="nav-item">
+                        <a class="nav-link">
+                            Bonjour {{ user.username }}
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a
+                            class="nav-link text-danger"
+                            href="{% url 'logout' %}"
+                        >
+                            Se déconnecter
+                        </a>
+                    </li>
+
+                {% else %}
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">
+                            Se connecter
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'register' %}">
+                            + Créer un  compte
+                        </a>
+                    </li>
+
+                {% endif %}
+
+            </ul>
+
+        </div>
+    </div>
+</nav>

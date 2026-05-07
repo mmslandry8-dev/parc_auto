@@ -7,7 +7,7 @@
     <div class="auth-card shadow animate__animated animate__fadeIn">
 
         <h2 class="text-center mb-4">
-            Créer un compte
+            Connexion
         </h2>
 
         <form method="POST">
@@ -21,18 +21,10 @@
                     Nom d'utilisateur
                 </label>
 
-                {{ form.username }}
-
-            </div>
-
-            <!-- Email -->
-            <div class="mb-3">
-
-                <label class="form-label">
-                    Adresse email
-                </label>
-
-                {{ form.email }}
+                <input type="text"
+                       name="username"
+                       class="form-control"
+                       placeholder="Entrez votre username">
 
             </div>
 
@@ -43,12 +35,15 @@
                     Mot de passe
                 </label>
 
-                {{ form.password }}
+                <input type="password"
+                       name="password"
+                       class="form-control"
+                       placeholder="Entrez votre mot de passe">
 
             </div>
 
             <button class="btn btn-dark w-100">
-                S'inscrire
+                Se connecter
             </button>
 
         </form>
@@ -56,13 +51,10 @@
         <div class="text-center mt-3">
 
             <small>
-
-                Vous avez déjà un compte ?
-
-                <a href="{% url 'login' %}">
-                    Se connecter
+                Pas encore de compte ?
+                <a href="{% url 'register' %}">
+                    S'inscrire
                 </a>
-
             </small>
 
         </div>
