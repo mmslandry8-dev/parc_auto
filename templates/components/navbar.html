@@ -37,6 +37,27 @@
                     </a>
                 </li>
 
+                <li class="nav-item">
+
+                    <a class="nav-link"
+                        href="{% url 'notification_list' %}">
+
+                        🔔 Notifications
+
+                        {% if notifications %}
+
+                            <span class="badge bg-danger">
+
+                                {{ notifications|length }}
+
+                            </span>
+
+                        {% endif %}
+
+                    </a>
+
+                </li>
+
                 <!-- ADMIN -->
                 {% if user.is_authenticated and user.groups.all.0.name == 'ADMIN' %}
 

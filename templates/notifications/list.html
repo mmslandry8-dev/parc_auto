@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+
+    <h2>Notifications</h2>
+
+    <ul class="list-group">
+
+        {% for n in notifications %}
+
+        <li class="list-group-item d-flex justify-content-between">
+
+            <div>
+
+                <strong>{{ n.title }}</strong><br>
+
+                <small>{{ n.message }}</small>
+
+            </div>
+
+            {% if not n.is_read %}
+
+                <a href="{% url 'mark_as_read' n.id %}"
+                   class="btn btn-sm btn-primary">
+
+                    Marquer lu
+
+                </a>
+
+            {% endif %}
+
+        </li>
+
+        {% empty %}
+
+            <p>Aucune notification</p>
+
+        {% endfor %}
+
+    </ul>
+
+</div>
+
+{% endblock %}
