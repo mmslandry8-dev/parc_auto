@@ -32,7 +32,9 @@
                 <h5>
                     Statut : {{ vehicle.statut }}
                 </h5>
-
+                <a href="{% url 'create_rental' vehicle.id %}" class="btn btn-dark mt-3">
+                    Réserver ce véhicule
+                </a>
             </div>
 
         </div>

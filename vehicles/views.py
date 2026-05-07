@@ -7,7 +7,6 @@ from .forms import VehicleForm
 
 from .models import Vehicle
 from django.contrib.auth.decorators import login_required
-from accounts.decorators import admin_required
 
 
 @login_required
