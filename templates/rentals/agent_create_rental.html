@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="row">
+
+        <!-- SIDEBAR -->
+        {% include 'components/sidebar.html' %}
+
+        <!-- CONTENT -->
+        <div class="col-md-10 p-4">
+
+            <div class="card shadow border-0">
+
+                <div class="card-body p-5">
+
+                    <h2 class="fw-bold mb-4">
+                        🚘 Nouvelle Location Terrain
+                    </h2>
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+                        <div class="row">
+
+                            <!-- CLIENT -->
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                    Nom client
+                                </label>
+
+                                {{ form.username }}
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                    Email
+                                </label>
+
+                                {{ form.email }}
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                    Mot de passe
+                                </label>
+
+                                {{ form.password }}
+
+                            </div>
+
+                            <!-- VEHICULE -->
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                    Véhicule
+                                </label>
+
+                                {{ form.vehicle }}
+
+                            </div>
+
+                            <!-- DATES -->
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                    Date début
+                                </label>
+
+                                {{ form.date_debut }}
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                    Date fin
+                                </label>
+
+                                {{ form.date_fin }}
+
+                            </div>
+
+                        </div>
+
+                        <button class="btn btn-dark px-5">
+
+                            Enregistrer la location
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

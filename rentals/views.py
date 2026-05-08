@@ -9,11 +9,22 @@ from django.shortcuts import (
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
+from django.contrib.auth.models import User
+
 from .models import Rental
-from .forms import RentalForm
+from .forms import (
+    RentalForm,
+    AgentRentalForm
+)
 
 from vehicles.models import Vehicle
-from accounts.decorators import admin_required
+
+from accounts.decorators import (
+    admin_required,
+    agent_required
+)
+
+from payments.models import Payment
 
 
 @login_required
@@ -46,7 +57,6 @@ def create_rental(request, pk):
             # VERIFICATION VEHICULE
             # =========================
 
-            # Véhicule vendu
             if vehicle.statut == 'VENDU':
 
                 messages.error(
@@ -59,7 +69,6 @@ def create_rental(request, pk):
                     pk=vehicle.id
                 )
 
-            # Véhicule maintenance
             if vehicle.statut == 'MAINTENANCE':
 
                 messages.error(
@@ -73,7 +82,7 @@ def create_rental(request, pk):
                 )
 
             # =========================
-            # VERIFICATION CONFLITS
+            # CONFLITS
             # =========================
 
             conflits = Rental.objects.filter(
@@ -91,7 +100,6 @@ def create_rental(request, pk):
 
             )
 
-            # Si conflit trouvé
             if conflits.exists():
 
                 messages.error(
@@ -113,7 +121,6 @@ def create_rental(request, pk):
                 rental.date_debut
             ).days
 
-            # sécurité minimum 1 jour
             if nb_jours <= 0:
 
                 nb_jours = 1
@@ -177,3 +184,149 @@ def validate_rental(request, pk):
     rental.statut = 'VALIDEE'
 
     rental.save()
+
+    # VEHICULE LOUE
+    rental.vehicle.statut = 'LOUE'
+
+    rental.vehicle.save()
+
+    messages.success(
+        request,
+        "Réservation validée."
+    )
+
+    return redirect('admin_dashboard')
+
+
+# ==================================================
+# LOCATION TERRAIN AGENT
+# ==================================================
+
+@login_required
+@agent_required
+def agent_create_rental(request):
+
+    """
+    Création location terrain par agent
+    """
+
+    form = AgentRentalForm()
+
+    if request.method == 'POST':
+
+        form = AgentRentalForm(request.POST)
+
+        if form.is_valid():
+
+            # CLIENT
+            username = form.cleaned_data['username']
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+
+            # VEHICULE
+            vehicle = form.cleaned_data['vehicle']
+
+            # DATES
+            date_debut = form.cleaned_data['date_debut']
+            date_fin = form.cleaned_data['date_fin']
+
+            # =========================
+            # CREATION CLIENT
+            # =========================
+
+            user, created = User.objects.get_or_create(
+
+                username=username,
+
+                defaults={
+                    'email': email
+                }
+
+            )
+
+            if created:
+
+                user.set_password(password)
+
+                user.save()
+
+            # =========================
+            # CALCUL PRIX
+            # =========================
+
+            nb_jours = (
+                date_fin -
+                date_debut
+            ).days
+
+            if nb_jours <= 0:
+
+                nb_jours = 1
+
+            prix_total = (
+
+                nb_jours *
+                vehicle.prix_location
+
+            )
+
+            # =========================
+            # CREATION LOCATION
+            # =========================
+
+            rental = Rental.objects.create(
+
+                client=user,
+
+                vehicle=vehicle,
+
+                date_debut=date_debut,
+
+                date_fin=date_fin,
+
+                prix_total=prix_total,
+
+                statut='VALIDEE'
+
+            )
+
+            # =========================
+            # VEHICULE LOUE
+            # =========================
+
+            vehicle.statut = 'LOUE'
+
+            vehicle.save()
+
+            # =========================
+            # PAIEMENT
+            # =========================
+
+            Payment.objects.create(
+
+                rental=rental,
+
+                montant=prix_total,
+
+                methode='ESPECES',
+
+                statut='PAYE'
+
+            )
+
+            messages.success(
+                request,
+                "Location terrain enregistrée avec succès."
+            )
+
+            return redirect(
+                'agent_dashboard'
+            )
+
+    return render(
+        request,
+        'rentals/agent_create_rental.html',
+        {
+            'form': form
+        }
+    )
