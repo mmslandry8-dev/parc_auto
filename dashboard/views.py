@@ -13,18 +13,29 @@ from rentals.models import Rental
 
 from payments.models import Payment
 
+from sales.models import Sale
+
 from django.contrib.auth.models import User
 
 from django.db.models import Sum
 
-# Create your views here.
+from django.db.models.functions import ExtractMonth
 
+
+# HOME
 def home(request):
+
     """
     Page d'accueil du site
     """
-    return render(request, 'home.html')
 
+    return render(
+        request,
+        'home.html'
+    )
+
+
+# DASHBOARD ADMIN
 @login_required
 @admin_required
 def admin_dashboard(request):
@@ -33,7 +44,10 @@ def admin_dashboard(request):
     Dashboard administrateur dynamique
     """
 
+    # =========================
     # VEHICULES
+    # =========================
+
     total_vehicles = Vehicle.objects.count()
 
     available_vehicles = Vehicle.objects.filter(
@@ -44,7 +58,14 @@ def admin_dashboard(request):
         statut='LOUE'
     ).count()
 
+    sold_vehicles = Vehicle.objects.filter(
+        statut='VENDU'
+    ).count()
+
+    # =========================
     # LOCATIONS
+    # =========================
+
     total_rentals = Rental.objects.count()
 
     pending_rentals = Rental.objects.filter(
@@ -55,39 +76,97 @@ def admin_dashboard(request):
         statut='VALIDEE'
     ).count()
 
+    # =========================
     # UTILISATEURS
+    # =========================
+
     total_clients = User.objects.filter(
         groups__name='CLIENT'
     ).count()
 
-    # REVENUS
-    total_revenue = Payment.objects.filter(
+    # =========================
+    # REVENUS LOCATIONS
+    # =========================
+
+    rental_revenue = Payment.objects.filter(
         statut='PAYE'
     ).aggregate(
         Sum('montant')
     )['montant__sum']
 
-    if total_revenue is None:
+    if rental_revenue is None:
 
-        total_revenue = 0
+        rental_revenue = 0
+
+    # =========================
+    # REVENUS VENTES
+    # =========================
+
+    sales_revenue = Sale.objects.filter(
+        statut='PAYEE'
+    ).aggregate(
+        Sum('prix_vente')
+    )['prix_vente__sum']
+
+    if sales_revenue is None:
+
+        sales_revenue = 0
+
+    # =========================
+    # REVENU TOTAL
+    # =========================
+
+    total_revenue = rental_revenue + sales_revenue
+
+    # =========================
+    # STATISTIQUES MENSUELLES
+    # =========================
+
+    monthly_payments = Payment.objects.filter(
+        statut='PAYE'
+    ).annotate(
+        month=ExtractMonth('created_at')
+    ).values('month').annotate(
+        total=Sum('montant')
+    ).order_by('month')
+
+    months = []
+    totals = []
+
+    for data in monthly_payments:
+
+        months.append(data['month'])
+
+        totals.append(float(data['total']))
+
+    # =========================
+    # CONTEXT
+    # =========================
 
     context = {
 
+        # VEHICULES
         'total_vehicles': total_vehicles,
-
         'available_vehicles': available_vehicles,
-
         'rented_vehicles': rented_vehicles,
+        'sold_vehicles': sold_vehicles,
 
+        # LOCATIONS
         'total_rentals': total_rentals,
-
         'pending_rentals': pending_rentals,
-
         'validated_rentals': validated_rentals,
 
+        # CLIENTS
         'total_clients': total_clients,
 
+        # REVENUS
+        'rental_revenue': rental_revenue,
+        'sales_revenue': sales_revenue,
         'total_revenue': total_revenue,
+
+        # CHARTS
+        'months': months,
+        'totals': totals,
 
     }
 
