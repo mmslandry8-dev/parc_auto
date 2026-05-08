@@ -21,6 +21,9 @@ from django.db.models import Sum
 
 from django.db.models.functions import ExtractMonth
 
+from django.db.models.functions import ExtractMonth
+
+import json
 
 # HOME
 def home(request):
@@ -165,8 +168,10 @@ def admin_dashboard(request):
         'total_revenue': total_revenue,
 
         # CHARTS
-        'months': months,
-        'totals': totals,
+        'months': json.dumps(months),
+        'totals': json.dumps(totals),
+        # 'months': months,
+        # 'totals': totals,
 
     }
 

@@ -280,6 +280,10 @@
 <!-- CHART JS -->
 <script>
 
+    const months = JSON.parse('{{ months|escapejs }}');
+
+    const totals = JSON.parse('{{ totals|escapejs }}');
+
     const ctx = document.getElementById('revenueChart');
 
     new Chart(ctx, {
@@ -288,17 +292,19 @@
 
         data: {
 
-            labels: {{ months|safe }},
+            labels: months,
 
             datasets: [{
 
                 label: 'Revenus mensuels',
 
-                data: {{ totals|safe }},
+                data: totals,
 
                 borderWidth: 3,
 
-                tension: 0.4
+                tension: 0.4,
+
+                fill: true
 
             }]
 
@@ -313,6 +319,16 @@
                 legend: {
 
                     display: true
+
+                }
+
+            },
+
+            scales: {
+
+                y: {
+
+                    beginAtZero: true
 
                 }
 
