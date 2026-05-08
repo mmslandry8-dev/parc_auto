@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+
+    <style>
+
+        body {
+
+            font-family: Arial;
+
+        }
+
+        .header {
+
+            text-align: center;
+
+            font-size: 22px;
+
+            font-weight: bold;
+
+        }
+
+        .box {
+
+            margin-top: 20px;
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="header">
+
+        FACTURE LOCATION
+
+    </div>
+
+    <div class="box">
+
+        <p><strong>Client :</strong> {{ rental.client.username }}</p>
+
+        <p><strong>Véhicule :</strong> {{ rental.vehicle }}</p>
+
+        <p><strong>Du :</strong> {{ rental.date_debut }}</p>
+
+        <p><strong>Au :</strong> {{ rental.date_fin }}</p>
+
+        <p><strong>Montant :</strong> {{ rental.prix_total }} FCFA</p>
+
+    </div>
+
+</body>
+
+</html>

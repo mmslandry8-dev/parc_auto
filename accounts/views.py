@@ -13,27 +13,48 @@ from .utils import assign_user_role
 from customers.models import Customer
 
 
+from django.shortcuts import render, redirect
+from django.contrib import messages
+
+from .forms import RegisterForm
+
+from .utils import assign_user_role
+
+from customers.models import Customer
+
+
 def register(request):
+
     """
     Inscription d'un utilisateur CLIENT
     """
+
+    # Formulaire vide
     form = RegisterForm()
 
+    # Si formulaire soumis
     if request.method == 'POST':
+
         form = RegisterForm(request.POST)
+
+        # Vérification validité
         if form.is_valid():
+
+            # Création utilisateur sans sauvegarde immédiate
             user = form.save(commit=False)
 
-            # Hash du mot de passe
-            user.set_password(form.cleaned_data['password'])
+            # Hash sécurisé mot de passe
+            user.set_password(
+                form.cleaned_data['password']
+            )
+
+            # Sauvegarde user
             user.save()
 
-            # Ajouter au groupe CLIENT
-            # group = Group.objects.get(name='CLIENT')
-            # user.groups.add(group)
-            # ROLE PAR DÉFAUT
+            # Attribution rôle CLIENT
             assign_user_role(user, 'CLIENT')
 
+            # Création fiche client automatique
             Customer.objects.create(
 
                 user=user,
@@ -44,9 +65,28 @@ def register(request):
 
             )
 
+            messages.success(
+                request,
+                "Compte créé avec succès."
+            )
+
             return redirect('login')
 
-    return render(request, 'accounts/register.html', {'form': form})
+        else:
+
+            messages.error(
+                request,
+                "Veuillez corriger les erreurs."
+            )
+
+    return render(
+        request,
+        'accounts/register.html',
+        {
+            'form': form
+        }
+    )
+
 
 def login_view(request):
     """
