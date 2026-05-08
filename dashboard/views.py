@@ -180,3 +180,54 @@ def admin_dashboard(request):
         'dashboard/admin_dashboard.html',
         context
     )
+
+@login_required
+@agent_required
+def agent_dashboard(request):
+
+    """
+    Dashboard agent
+    """
+
+    # VEHICULES DISPONIBLES
+    available_vehicles = Vehicle.objects.filter(
+        statut='DISPONIBLE'
+    ).count()
+
+    # LOCATIONS EN ATTENTE
+    pending_rentals = Rental.objects.filter(
+        statut='EN_ATTENTE'
+    ).count()
+
+    # LOCATIONS VALIDÉES
+    validated_rentals = Rental.objects.filter(
+        statut='VALIDEE'
+    ).count()
+
+    # REVENUS
+    total_revenue = Payment.objects.filter(
+        statut='PAYE'
+    ).aggregate(
+        Sum('montant')
+    )['montant__sum']
+
+    if total_revenue is None:
+        total_revenue = 0
+
+    context = {
+
+        'available_vehicles': available_vehicles,
+
+        'pending_rentals': pending_rentals,
+
+        'validated_rentals': validated_rentals,
+
+        'total_revenue': total_revenue,
+
+    }
+
+    return render(
+        request,
+        'dashboard/agent_dashboard.html',
+        context
+    )

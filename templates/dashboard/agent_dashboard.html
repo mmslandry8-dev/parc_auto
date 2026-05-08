@@ -2,8 +2,171 @@
 
 {% block content %}
 
-<h1>
-    Dashboard AGENT
-</h1>
+<div class="container-fluid">
+
+    <div class="row">
+
+        <!-- SIDEBAR -->
+        {% include 'components/sidebar.html' %}
+
+        <!-- CONTENT -->
+        <div class="col-md-10 p-4">
+
+            <h2 class="fw-bold mb-4">
+                👨‍💼 Dashboard Agent
+            </h2>
+
+            <div class="row g-4">
+
+                <!-- VEHICULES -->
+                <div class="col-md-3">
+
+                    <div class="card dashboard-card shadow border-0">
+
+                        <div class="card-body">
+
+                            <h6 class="text-muted">
+                                🚗 Disponibles
+                            </h6>
+
+                            <h2 class="fw-bold">
+                                {{ available_vehicles }}
+                            </h2>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- EN ATTENTE -->
+                <div class="col-md-3">
+
+                    <div class="card dashboard-card shadow border-0">
+
+                        <div class="card-body">
+
+                            <h6 class="text-muted">
+                                ⏳ En attente
+                            </h6>
+
+                            <h2 class="fw-bold text-warning">
+                                {{ pending_rentals }}
+                            </h2>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- VALIDÉES -->
+                <div class="col-md-3">
+
+                    <div class="card dashboard-card shadow border-0">
+
+                        <div class="card-body">
+
+                            <h6 class="text-muted">
+                                ✔️ Validées
+                            </h6>
+
+                            <h2 class="fw-bold text-success">
+                                {{ validated_rentals }}
+                            </h2>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- REVENUS -->
+                <div class="col-md-3">
+
+                    <div class="card dashboard-card shadow border-0">
+
+                        <div class="card-body">
+
+                            <h6 class="text-muted">
+                                💰 Revenus
+                            </h6>
+
+                            <h2 class="fw-bold text-primary">
+                                {{ total_revenue }} FCFA
+                            </h2>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- ACTIONS RAPIDES -->
+            <div class="row mt-5">
+
+                <div class="col-md-6">
+
+                    <div class="card shadow border-0 dashboard-card">
+
+                        <div class="card-body">
+
+                            <h4 class="mb-3">
+                                🚘 Nouvelle location
+                            </h4>
+
+                            <p>
+                                Enregistrer rapidement une location terrain.
+                            </p>
+
+                            <a href="#"
+                               class="btn btn-dark">
+
+                                Nouvelle location
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <div class="card shadow border-0 dashboard-card">
+
+                        <div class="card-body">
+
+                            <h4 class="mb-3">
+                                💰 Nouvelle vente
+                            </h4>
+
+                            <p>
+                                Enregistrer une vente physique.
+                            </p>
+
+                            <a href="#"
+                               class="btn btn-primary">
+
+                                Nouvelle vente
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
 {% endblock %}

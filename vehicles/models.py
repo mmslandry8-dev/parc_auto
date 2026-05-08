@@ -70,8 +70,10 @@ class Vehicle(models.Model):
 
     # IMAGE
     image = models.ImageField(
-        upload_to='vehicles/'
-    )
+    upload_to='vehicles/',
+    blank=True,
+    null=True
+)
 
     # DESCRIPTION
     description = models.TextField()
@@ -88,3 +90,9 @@ class Vehicle(models.Model):
     def __str__(self):
 
         return f"{self.marque} {self.modele}"
+    
+    def is_available(self):
+        return self.statut == 'DISPONIBLE'
+    
+    def formatted_rental_price(self):
+        return f"{self.prix_location} FCFA"

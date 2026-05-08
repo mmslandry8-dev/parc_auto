@@ -36,7 +36,11 @@
     {% endif %}
 
     <!-- CONTENU -->
-<div class="{% if request.path != '/' %}container mt-5 pt-5{% endif %}">
+<div class="
+{% if request.path != '/' and request.path != '/admin-dashboard/' and request.path != '/accounts/login/' and request.path != '/accounts/register/' and request.path != '/agent-dashboard/' %}
+    container mt-5 pt-5
+{% endif %}
+">
     
     <!-- MESSAGES -->  
     {% include 'components/messages.html' %}
