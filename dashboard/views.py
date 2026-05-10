@@ -160,42 +160,26 @@ def admin_dashboard(request):
 def agent_dashboard(request):
 
     """
-    Dashboard agent
+    Dashboard agent - version optimisée
     """
 
-    # VEHICULES DISPONIBLES
-    available_vehicles = Vehicle.objects.filter(
-        statut='DISPONIBLE'
-    ).count()
+    available_vehicles = Vehicle.objects.filter(statut='DISPONIBLE').count()
 
-    # LOCATIONS EN ATTENTE
-    pending_rentals = Rental.objects.filter(
-        statut='EN_ATTENTE'
-    ).count()
+    pending_rentals = Rental.objects.filter(statut='EN_ATTENTE').count()
 
-    # LOCATIONS VALIDÉES
-    validated_rentals = Rental.objects.filter(
-        statut='VALIDEE'
-    ).count()
+    validated_rentals = Rental.objects.filter(statut='VALIDEE').count()
 
-    # REVENUS
     total_revenue = Payment.objects.filter(
         statut='PAYE'
     ).aggregate(
-        Sum('montant')
-    )['montant__sum']
-
-    if total_revenue is None:
-        total_revenue = 0
+        total=Sum('montant')
+    )['total'] or 0
 
     context = {
 
         'available_vehicles': available_vehicles,
-
         'pending_rentals': pending_rentals,
-
         'validated_rentals': validated_rentals,
-
         'total_revenue': total_revenue,
 
     }
@@ -205,3 +189,26 @@ def agent_dashboard(request):
         'dashboard/agent_dashboard.html',
         context
     )
+
+    return render(
+        request,
+        'dashboard/agent_dashboard.html',
+        context
+    )
+
+@login_required
+@agent_required
+def agent_create_rental(request):
+    """
+    Création rapide location (walk-in agent)
+    """
+    return render(request, 'rental/agent_create_rental.html')
+
+
+@login_required
+@agent_required
+def agent_create_sale(request):
+    """
+    Création rapide vente (walk-in agent)
+    """
+    return render(request, 'sale/agent_create_sale.html')

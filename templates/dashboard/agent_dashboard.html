@@ -161,6 +161,35 @@
 
                 </div>
 
+                <!-- QUICK ACTIONS BAR -->
+                <div class="row mt-4">
+
+                    <div class="col-md-12">
+
+                        <div class="card shadow border-0 p-3">
+
+                            <div class="d-flex gap-3 flex-wrap">
+
+                                <a href="{% url 'vehicle_list' %}" class="btn btn-outline-dark">
+                                    🚗 Voir véhicules
+                                </a>
+
+                                <a href="{% url 'agent_create_rental' %}" class="btn btn-dark">
+                                    ➕ Location rapide
+                                </a>
+
+                                <a href="{% url 'agent_create_sale' %}" class="btn btn-primary">
+                                    💰 Vente rapide
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
             </div>
 
         </div>

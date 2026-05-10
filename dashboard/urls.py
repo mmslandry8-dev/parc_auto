@@ -24,4 +24,17 @@ urlpatterns = [
         name='agent_dashboard'
     ),
 
+    # AGENT ACTIONS
+    path(
+        'agent/rentals/create/',
+        views.agent_create_rental,
+        name='agent_create_rental'
+    ),
+
+    path(
+        'agent/sales/create/',
+        views.agent_create_sale,
+        name='agent_create_sale'    
+    ),
+
 ]
