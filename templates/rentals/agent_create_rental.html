@@ -2,100 +2,170 @@
 
 {% block content %}
 
-<div class="container-fluid">
+<div class="container mt-4">
 
-    <div class="row">
+    <div class="row justify-content-center">
 
         <!-- SIDEBAR -->
         {% include 'components/sidebar.html' %}
 
-        <!-- CONTENT -->
-        <div class="col-md-10 p-4">
+        <div class="col-lg-10">
 
             <div class="card shadow border-0">
 
                 <div class="card-body p-5">
 
                     <h2 class="fw-bold mb-4">
-                        🚘 Nouvelle Location Terrain
+                        🚘 Nouvelle location terrain
                     </h2>
 
                     <form method="POST">
 
                         {% csrf_token %}
 
-                        <div class="row">
+                        <!-- CLIENT EXISTANT -->
+                        <div class="card border-0 shadow-sm mb-4">
 
-                            <!-- CLIENT -->
-                            <div class="col-md-6 mb-3">
+                            <div class="card-body">
 
-                                <label class="form-label">
-                                    Nom client
-                                </label>
-
-                                {{ form.username }}
-
-                            </div>
-
-                            <div class="col-md-6 mb-3">
+                                <h4 class="mb-3">
+                                    👤 Client existant
+                                </h4>
 
                                 <label class="form-label">
-                                    Email
+                                    Sélectionner un client
                                 </label>
 
-                                {{ form.email }}
-
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-
-                                <label class="form-label">
-                                    Mot de passe
-                                </label>
-
-                                {{ form.password }}
-
-                            </div>
-
-                            <!-- VEHICULE -->
-                            <div class="col-md-6 mb-3">
-
-                                <label class="form-label">
-                                    Véhicule
-                                </label>
-
-                                {{ form.vehicle }}
-
-                            </div>
-
-                            <!-- DATES -->
-                            <div class="col-md-6 mb-3">
-
-                                <label class="form-label">
-                                    Date début
-                                </label>
-
-                                {{ form.date_debut }}
-
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-
-                                <label class="form-label">
-                                    Date fin
-                                </label>
-
-                                {{ form.date_fin }}
+                                {{ form.existing_client }}
 
                             </div>
 
                         </div>
 
-                        <button class="btn btn-dark px-5">
+                        <!-- OU -->
+                        <div class="text-center mb-4">
 
-                            Enregistrer la location
+                            <h5 class="text-muted">
+                                — OU —
+                            </h5>
 
-                        </button>
+                        </div>
+
+                        <!-- NOUVEAU CLIENT -->
+                        <div class="card border-0 shadow-sm mb-4">
+
+                            <div class="card-body">
+
+                                <h4 class="mb-4">
+                                    ➕ Nouveau client
+                                </h4>
+
+                                <div class="row">
+
+                                    <div class="col-md-4 mb-3">
+
+                                        <label class="form-label">
+                                            Nom utilisateur
+                                        </label>
+
+                                        {{ form.username }}
+
+                                    </div>
+
+                                    <div class="col-md-4 mb-3">
+
+                                        <label class="form-label">
+                                            Email
+                                        </label>
+
+                                        {{ form.email }}
+
+                                    </div>
+
+                                    <div class="col-md-4 mb-3">
+
+                                        <label class="form-label">
+                                            Mot de passe
+                                        </label>
+
+                                        {{ form.password }}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- LOCATION -->
+                        <div class="card border-0 shadow-sm mb-4">
+
+                            <div class="card-body">
+
+                                <h4 class="mb-4">
+                                    🚗 Informations location
+                                </h4>
+
+                                <div class="row">
+
+                                    <div class="col-md-4 mb-3">
+
+                                        <label class="form-label">
+                                            Véhicule
+                                        </label>
+
+                                        {{ form.vehicle }}
+
+                                    </div>
+
+                                    <div class="col-md-4 mb-3">
+
+                                        <label class="form-label">
+                                            Date début
+                                        </label>
+
+                                        {{ form.date_debut }}
+
+                                    </div>
+
+                                    <div class="col-md-4 mb-3">
+
+                                        <label class="form-label">
+                                            Date fin
+                                        </label>
+
+                                        {{ form.date_fin }}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- ERREURS -->
+                        {% if form.errors %}
+
+                            <div class="alert alert-danger">
+
+                                {{ form.errors }}
+
+                            </div>
+
+                        {% endif %}
+
+                        <!-- BUTTON -->
+                        <div class="d-grid">
+
+                            <button class="btn btn-dark btn-lg">
+
+                                ✅ Valider la location
+
+                            </button>
+
+                        </div>
 
                     </form>
 
@@ -108,5 +178,51 @@
     </div>
 
 </div>
+
+<!-- JS DYNAMIQUE -->
+<script>
+
+    const existingClient = document.getElementById(
+        "id_existing_client"
+    );
+
+    const username = document.getElementById(
+        "id_username"
+    );
+
+    const email = document.getElementById(
+        "id_email"
+    );
+
+    const password = document.getElementById(
+        "id_password"
+    );
+
+    function toggleClientFields() {
+
+        if (existingClient.value) {
+
+            username.disabled = true;
+            email.disabled = true;
+            password.disabled = true;
+
+        } else {
+
+            username.disabled = false;
+            email.disabled = false;
+            password.disabled = false;
+
+        }
+
+    }
+
+    existingClient.addEventListener(
+        "change",
+        toggleClientFields
+    );
+
+    toggleClientFields();
+
+</script>
 
 {% endblock %}
