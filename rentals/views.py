@@ -27,6 +27,7 @@ from accounts.decorators import (
 
 from payments.models import Payment
 
+from django.contrib.auth.models import Group
 
 @login_required
 def create_rental(request, pk):
@@ -251,6 +252,39 @@ def agent_create_rental(request):
                 user.set_password(password)
 
                 user.save()
+
+                # AJOUT GROUPE CLIENT
+                client_group = Group.objects.get(
+                    name='CLIENT'
+                )
+
+                user.groups.add(client_group)
+
+            conflits = Rental.objects.filter(
+
+                vehicle=vehicle,
+
+                statut__in=[
+                    'EN_ATTENTE',
+                    'VALIDEE'
+                ],
+
+                date_debut__lte=date_fin,
+
+                date_fin__gte=date_debut
+
+            )
+
+            if conflits.exists():
+
+                messages.error(
+                    request,
+                    "Ce véhicule est déjà réservé pour ces dates."
+                )
+
+                return redirect(
+                    'agent_create_rental'
+                )   
 
             # =========================
             # CALCUL PRIX
