@@ -1,6 +1,6 @@
 <div class="col-md-2 bg-dark text-white min-vh-100 p-4">
 
-    <h4 class="mb-4">🚗 Menu</h4>
+    <h4 class="mb-4"> <b>  Menu </b> </h4>
 
     <ul class="nav flex-column">
 
@@ -12,6 +12,13 @@
                     Dashboard Admin
                 </a>
             </li>
+            
+            <li class="nav-item mb-2">
+                <a class="nav-link text-white" href="{% url 'vehicle_list' %}">
+                    Voir les vehicules 
+                </a>
+            </li>
+
 
         {% endif %}
 
@@ -25,14 +32,8 @@
             </li>
 
             <li class="nav-item mb-2">
-                <a class="nav-link text-white" href="{% url 'agent_create_rental' %}">
-                    Location terrain
-                </a>
-            </li>
-
-            <li class="nav-item mb-2">
-                <a class="nav-link text-white" href="{% url 'agent_create_sale' %}">
-                    Vente terrain
+                <a class="nav-link text-white" href="{% url 'vehicle_list' %}">
+                    Voir les vehicules 
                 </a>
             </li>
 

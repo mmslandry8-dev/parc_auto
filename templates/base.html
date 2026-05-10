@@ -29,8 +29,10 @@
 <body>
 
     <!-- NAVBAR -->
-    {% include 'components/navbar.html' %}
-
+    {% if request.path != "/accounts/login/" and request.path != "/accounts/register/" %}
+        {% include 'components/navbar.html' %}
+    {% endif %}
+    
     <!-- CONTENU -->
     <main class="app-content">
 

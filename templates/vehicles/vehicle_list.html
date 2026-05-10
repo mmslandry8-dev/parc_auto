@@ -5,7 +5,7 @@
 <div class="container">
 
     <h2 class="mb-4">
-        🚗 Liste des véhicules
+        🚘 Liste des véhicules
     </h2>
 
     <!-- SEARCH & FILTERS -->
@@ -120,7 +120,7 @@
                         </h5>
 
                         <p>
-                            {{ vehicle.prix_location }} FCFA / jour
+                            <b> Location : {{ vehicle.prix_location }} FCFA / jour </b> 
                         </p>
 
                         <p class="fw-bold text-success">
@@ -154,7 +154,12 @@
                                     href="{% url 'request_sale' vehicle.id %}"
                                     class="btn btn-sm btn-success"
                                 >
+                                {% if user_role == 'CLIENT' %}
                                     Acheter
+    
+                                {% elif user.groups.first.name == 'ADMIN' or user.groups.first.name == 'AGENT' %}
+                                    Vendre
+                                {% endif %}    
                                 </a>
 
                             {% endif %}
