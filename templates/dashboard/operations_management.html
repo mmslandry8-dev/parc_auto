@@ -1,0 +1,309 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="row">
+
+        <!-- SIDEBAR -->
+        {% include 'components/sidebar.html' %}
+
+        <!-- CONTENT -->
+        <div class="col-md-10 p-4">
+
+            <h2 class="fw-bold mb-4">
+                📋 Gestion des opérations
+            </h2>
+
+            <!-- LOCATIONS -->
+            <div class="card shadow border-0 mb-5">
+
+                <div class="card-body">
+
+                    <h4 class="mb-4">
+                        🚘 Locations
+                    </h4>
+
+                    <div class="table-responsive">
+
+                        <table class="table table-hover align-middle">
+
+                            <thead class="table-dark">
+
+                                <tr>
+
+                                    <th>Client</th>
+
+                                    <th>Véhicule</th>
+
+                                    <th>Dates</th>
+
+                                    <th>Prix</th>
+
+                                    <th>Statut</th>
+
+                                    <th>Paiement</th>
+
+                                    <th>Actions</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                {% for rental in rentals %}
+
+                                <tr>
+
+                                    <td>
+                                        {{ rental.client.username }}
+                                    </td>
+
+                                    <td>
+                                        {{ rental.vehicle }}
+                                    </td>
+
+                                    <td>
+                                        {{ rental.date_debut }}
+                                        →
+                                        {{ rental.date_fin }}
+                                    </td>
+
+                                    <td>
+                                        {{ rental.prix_total }} FCFA
+                                    </td>
+
+                                    <td>
+
+                                        {% if rental.statut == 'VALIDEE' %}
+
+                                            <span class="badge bg-success">
+                                                Validée
+                                            </span>
+
+                                        {% elif rental.statut == 'EN_ATTENTE' %}
+
+                                            <span class="badge bg-warning">
+                                                En attente
+                                            </span>
+
+                                        {% elif rental.statut == 'REFUSEE' %}
+
+                                            <span class="badge bg-danger">
+                                                Refusée
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+                                    <td>
+
+                                        {% if rental.payment %}
+
+                                            <span class="badge bg-success">
+                                                Payé
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="badge bg-secondary">
+                                                Non payé
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+                                    <td>
+
+                                        {% if rental.statut == 'EN_ATTENTE' %}
+
+                                            <a href="{% url 'validate_rental' rental.id %}"
+                                                class="btn btn-sm btn-success">
+
+                                                    Valider
+
+                                            </a>
+
+                                            <a href="{% url 'refuse_rental' rental.id %}"
+                                                class="btn btn-sm btn-danger">
+
+                                                    Refuser
+
+                                            </a>
+
+                                        {% elif rental.statut == 'VALIDEE' %}
+
+                                            <a href="{% url 'cancel_rental' rental.id %}"
+                                                class="btn btn-sm btn-warning">
+
+                                                    Annuler
+
+                                            </a>
+
+                                        {% endif %}
+                                        {% if rental.payment and rental.payment.statut == 'PAYE' %}
+
+                                            <a href="{% url 'invoice_rental' rental.id %}"
+                                                class="btn btn-sm btn-primary">
+
+                                                    Télécharger la facture
+
+                                            </a>
+
+                                        {% endif %}
+
+                                    </td>
+
+                                </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- VENTES -->
+            <div class="card shadow border-0">
+
+                <div class="card-body">
+
+                    <h4 class="mb-4">
+                        💰 Ventes
+                    </h4>
+
+                    <div class="table-responsive">
+
+                        <table class="table table-hover align-middle">
+
+                            <thead class="table-dark">
+
+                                <tr>
+
+                                    <th>Client</th>
+
+                                    <th>Véhicule</th>
+
+                                    <th>Prix</th>
+
+                                    <th>Statut</th>
+
+                                    <th>Actions</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                {% for sale in sales %}
+
+                                <tr>
+
+                                    <td>
+                                        {{ sale.client.username }}
+                                    </td>
+
+                                    <td>
+                                        {{ sale.vehicle }}
+                                    </td>
+
+                                    <td>
+                                        {{ sale.prix_vente }} FCFA
+                                    </td>
+
+                                    <td>
+
+                                        {% if sale.statut == 'VALIDEE' %}
+
+                                            <span class="badge bg-success">
+                                                Validée
+                                            </span>
+
+                                        {% elif sale.statut == 'EN_ATTENTE' %}
+
+                                            <span class="badge bg-warning">
+                                                En attente
+                                            </span>
+
+                                        {% elif sale.statut == 'REFUSEE' %}
+
+                                            <span class="badge bg-danger">
+                                                Refusée
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+                                    <td>
+
+                                        {% if sale.statut == 'EN_ATTENTE' %}
+
+                                            <a href="{% url 'validate_sale' sale.id %}"
+                                                class="btn btn-sm btn-success">
+
+                                                    Valider
+
+                                            </a>
+
+                                            <a href="{% url 'refuse_sale' sale.id %}"
+                                                class="btn btn-sm btn-danger">
+
+                                                    Refuser
+
+                                            </a>
+
+                                        {% elif sale.statut == 'VALIDEE' %}
+
+                                            <a href="{% url 'cancel_sale' sale.id %}"
+                                                class="btn btn-sm btn-warning">
+
+                                                    Annuler
+
+                                            </a>
+
+                                        {% endif %}   
+                                        {% if sale.statut == 'PAYEE' %}
+
+                                            <a href="{% url 'invoice_sale' sale.id %}"
+                                                class="btn btn-sm btn-primary">
+
+                                                   Télécharger la facture
+
+                                            </a>
+
+                                        {% endif %} 
+
+                                    </td>
+
+                                </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

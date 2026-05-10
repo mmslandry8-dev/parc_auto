@@ -4,7 +4,8 @@ from django.contrib.auth.decorators import login_required
 
 from accounts.decorators import (
     admin_required,
-    agent_required
+    agent_required,
+    admin_or_agent_required
 )
 
 from vehicles.models import Vehicle
@@ -202,7 +203,7 @@ def agent_create_rental(request):
     """
     Création rapide location (walk-in agent)
     """
-    return render(request, 'rental/agent_create_rental.html')
+    return render(request, 'rentals/agent_create_rental.html')
 
 
 @login_required
@@ -211,4 +212,39 @@ def agent_create_sale(request):
     """
     Création rapide vente (walk-in agent)
     """
-    return render(request, 'sale/agent_create_sale.html')
+    return render(request, 'sales/agent_create_sale.html')
+
+# ==================================================
+# GESTION DES OPERATIONS
+# ==================================================
+
+@login_required
+@admin_or_agent_required
+def operations_management(request):
+
+    """
+    Centre de gestion des opérations
+    """
+
+    rentals = Rental.objects.select_related(
+        'client',
+        'vehicle'
+    ).all().order_by('-id')
+
+    sales = Sale.objects.select_related(
+        'client',
+        'vehicle'
+    ).all().order_by('-id')
+
+    context = {
+
+        'rentals': rentals,
+        'sales': sales,
+
+    }
+
+    return render(
+        request,
+        'dashboard/operations_management.html',
+        context
+    )

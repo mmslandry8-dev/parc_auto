@@ -35,4 +35,17 @@ urlpatterns = [
         name='agent_create_rental'
     ),
 
+    path(
+        'cancel/<int:pk>/',
+        views.cancel_rental,
+        name='cancel_rental'
+    ),
+
+    path(
+        'refuse/<int:pk>/',
+        views.refuse_rental,
+        name='refuse_rental'
+    ),
+
+    
 ]

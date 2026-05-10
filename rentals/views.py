@@ -11,6 +11,8 @@ from django.contrib import messages
 
 from django.contrib.auth.models import User
 
+from sales.models import Sale
+
 from .models import Rental
 from .forms import (
     RentalForm,
@@ -162,7 +164,7 @@ def my_rentals(request):
 
     rentals = Rental.objects.filter(
         client=request.user
-    )
+    ).select_related('payment')
 
     return render(
         request,
@@ -198,7 +200,7 @@ def validate_rental(request, pk):
         "Réservation validée."
     )
 
-    return redirect('admin_dashboard')
+    return redirect('oerations_management')
 
 
 # ==================================================
@@ -396,3 +398,55 @@ def agent_create_rental(request):
             'form': form
         }
     )
+
+@login_required
+@admin_or_agent_required
+def cancel_rental(request, pk):
+
+    """
+    Annulation location
+    """
+
+    rental = get_object_or_404(
+        Rental,
+        id=pk
+    )
+
+    # LOCATION ANNULEE
+    rental.statut = 'REFUSEE'
+    rental.save()
+
+    # VEHICULE DISPONIBLE
+    rental.vehicle.statut = 'DISPONIBLE'
+    rental.vehicle.save()
+
+    # PAIEMENT
+    Payment.objects.filter(
+        rental=rental
+    ).delete()
+
+    messages.warning(
+        request,
+        "Location annulée."
+    )
+
+    return redirect('operations_management')
+
+@login_required
+@admin_or_agent_required
+def refuse_rental(request, pk):
+
+    rental = get_object_or_404(
+        Rental,
+        id=pk
+    )
+
+    rental.statut = 'REFUSEE'
+    rental.save()
+
+    messages.warning(
+        request,
+        "Location refusée."
+    )
+
+    return redirect('operations_management')

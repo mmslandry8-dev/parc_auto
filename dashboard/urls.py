@@ -37,4 +37,10 @@ urlpatterns = [
         name='agent_create_sale'    
     ),
 
+    path(
+        'operations/',
+        views.operations_management,
+        name='operations_management'
+    ),
+
 ]

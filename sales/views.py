@@ -252,3 +252,96 @@ def agent_create_sale(request):
         }
 
     )
+
+from django.contrib import messages
+
+from django.shortcuts import (
+    get_object_or_404,
+    redirect
+)
+
+from django.contrib.auth.decorators import login_required
+
+from accounts.decorators import (
+    admin_or_agent_required
+)
+
+from .models import Sale
+
+@login_required
+@admin_or_agent_required
+def validate_sale(request, pk):
+
+    """
+    Validation vente
+    """
+
+    sale = get_object_or_404(
+        Sale,
+        id=pk
+    )
+
+    sale.statut = 'VALIDEE'
+    sale.save()
+
+    # VEHICULE VENDU
+    sale.vehicle.statut = 'VENDU'
+    sale.vehicle.save()
+
+    messages.success(
+        request,
+        "Vente validée avec succès."
+    )
+
+    return redirect('operations_management')
+
+@login_required
+@admin_or_agent_required
+def refuse_sale(request, pk):
+
+    """
+    Refus vente
+    """
+
+    sale = get_object_or_404(
+        Sale,
+        id=pk
+    )
+
+    sale.statut = 'REFUSEE'
+    sale.save()
+
+    messages.warning(
+        request,
+        "Vente refusée."
+    )
+
+    return redirect('operations_management')
+
+@login_required
+@admin_or_agent_required
+def cancel_sale(request, pk):
+
+    """
+    Annulation vente
+    """
+
+    sale = get_object_or_404(
+        Sale,
+        id=pk
+    )
+
+    # VENTE ANNULEE
+    sale.statut = 'REFUSEE'
+    sale.save()
+
+    # VEHICULE DISPONIBLE
+    sale.vehicle.statut = 'DISPONIBLE'
+    sale.vehicle.save()
+
+    messages.warning(
+        request,
+        "Vente annulée."
+    )
+
+    return redirect('operations_management')

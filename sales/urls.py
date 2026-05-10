@@ -34,9 +34,27 @@ urlpatterns = [
     ),
 
     path(
-    'agent/create/',
-    views.agent_create_sale,
-    name='agent_create_sale'
-),
+        'agent/create/',
+        views.agent_create_sale,
+        name='agent_create_sale'
+    ),
+
+    path(
+        'validate/<int:pk>/',
+        views.validate_sale,
+        name='validate_sale'
+    ),
+
+    path(
+        'refuse/<int:pk>/',
+        views.refuse_sale,
+        name='refuse_sale'
+    ),
+
+    path(
+        'cancel/<int:pk>/',
+        views.cancel_sale,
+        name='cancel_sale'
+    ),
 
 ]

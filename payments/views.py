@@ -5,6 +5,7 @@ from django.shortcuts import (
 )
 
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 from accounts.decorators import admin_required
 
@@ -18,13 +19,44 @@ from .forms import PaymentForm
 def create_payment(request, pk):
 
     """
-    Effectuer paiement
+    Effectuer paiement sécurisé
     """
 
     rental = get_object_or_404(
         Rental,
-        id=pk
+        id=pk,
+        client=request.user
     )
+
+    # =========================
+    # LOCATION NON VALIDEE
+    # =========================
+
+    if rental.statut != 'VALIDEE':
+
+        messages.error(
+            request,
+            "Cette location n'a pas encore été validée."
+        )
+
+        return redirect('my_rentals')
+
+    # =========================
+    # PAIEMENT EXISTANT
+    # =========================
+
+    existing_payment = Payment.objects.filter(
+        rental=rental
+    ).first()
+
+    if existing_payment:
+
+        messages.warning(
+            request,
+            "Le paiement existe déjà pour cette location."
+        )
+
+        return redirect('my_payments')
 
     form = PaymentForm()
 
@@ -40,7 +72,14 @@ def create_payment(request, pk):
 
             payment.montant = rental.prix_total
 
+            payment.statut = 'PAYE'
+
             payment.save()
+
+            messages.success(
+                request,
+                "Paiement effectué avec succès."
+            )
 
             return redirect('my_payments')
 
@@ -87,5 +126,10 @@ def validate_payment(request, pk):
     payment.statut = 'PAYE'
 
     payment.save()
+
+    messages.success(
+        request,
+        "Paiement validé."
+    )
 
     return redirect('admin_dashboard')

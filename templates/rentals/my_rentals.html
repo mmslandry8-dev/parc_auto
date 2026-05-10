@@ -94,11 +94,32 @@
 
                 <td>
 
-                    <a href="{% url 'create_payment' rental.id %}" class="btn btn-sm btn-dark">
+                    {% if rental.statut == 'VALIDEE' %}
 
-                        Payer
+                        {% if rental.payment %}
 
-                    </a>
+                            <span class="badge bg-success">
+                                Déjà payé
+                            </span>
+
+                        {% else %}
+
+                            <a href="{% url 'create_payment' rental.id %}"
+                                class="btn btn-sm btn-dark">
+
+                                Payer
+
+                            </a>
+
+                        {% endif %}
+
+                    {% else %}
+
+                        <span class="badge bg-secondary">
+                            En attente validation
+                        </span>
+
+                    {% endif %}
 
                 </td>
 
