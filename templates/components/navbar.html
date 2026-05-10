@@ -19,14 +19,15 @@
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <!-- LIENS -->
         <div class="collapse navbar-collapse" id="nav">
 
-            <ul class="navbar-nav ms-auto">
+            <!-- ===================== -->
+            <!-- 🔹 LIENS FONCTIONNELS -->
+            <!-- ===================== -->
+            <ul class="navbar-nav me-auto">
 
-                <!-- TOUS -->
                 <li class="nav-item">
-                    <a class="nav-link" href="/">
+                    <a class="nav-link" href="{% url 'home' %}">
                         Accueil
                     </a>
                 </li>
@@ -37,63 +38,58 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
-
-                    <a class="nav-link"
-                        href="{% url 'notification_list' %}">
-
-                        🔔 Notifications
-
-                        {% if notifications %}
-
-                            <span class="badge bg-danger">
-
-                                {{ notifications|length }}
-
-                            </span>
-
-                        {% endif %}
-
-                    </a>
-
-                </li>
-
-                <!-- ADMIN -->
-                {% if user.is_authenticated and user.groups.all.0.name == 'ADMIN' %}
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'admin_dashboard' %}">
-                            Dashboard Admin
-                        </a>
-                    </li>
-
-                {% endif %}
-
-                <!-- AGENT -->
-                {% if user.is_authenticated and user.groups.all.0.name == 'AGENT' %}
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'agent_dashboard' %}">
-                            Dashboard Agent
-                        </a>
-                    </li>
-
-                {% endif %}
-
-                <!-- USER -->
                 {% if user.is_authenticated %}
 
                     <li class="nav-item">
-                        <a class="nav-link">
-                             Bonjour <b>[ {{ user.username }} ]</b>
+                        <a class="nav-link" href="{% url 'notification_list' %}">
+                            🔔 Notifications
+
+                            {% if notifications %}
+                                <span class="badge bg-danger">
+                                    {{ notifications|length }}
+                                </span>
+                            {% endif %}
+
                         </a>
                     </li>
 
+                    <!-- ADMIN -->
+                    {% if user.groups.first and user.groups.first.name == 'ADMIN' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'admin_dashboard' %}">
+                                Dashboard Admin
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    <!-- AGENT -->
+                    {% if user.groups.first and user.groups.first.name == 'AGENT' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'agent_dashboard' %}">
+                                Dashboard Agent
+                            </a>
+                        </li>
+                    {% endif %}
+
+                {% endif %}
+
+            </ul>
+
+            <!-- ===================== -->
+            <!-- 🔹 SESSION (DROITE) -->
+            <!-- ===================== -->
+            <ul class="navbar-nav ms-auto">
+
+                {% if user.is_authenticated %}
+
                     <li class="nav-item">
-                        <a
-                            class="nav-link text-danger"
-                            href="{% url 'logout' %}"
-                        >
+                        <span class="nav-link text-white">
+                            Bonjour <b>[{{ user.username }}]</b>
+                        </span>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" href="{% url 'logout' %}">
                             Se déconnecter
                         </a>
                     </li>
@@ -102,12 +98,13 @@
 
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'login' %}">
-                            Se connecter
+                            Connexion
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'register' %}">
-                            S'inscrire
+                            Inscription
                         </a>
                     </li>
 

@@ -30,7 +30,9 @@ class Payment(models.Model):
     # LOCATION
     rental = models.OneToOneField(
         Rental,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
     )
 
     # MONTANT

@@ -6,11 +6,25 @@ from django.shortcuts import (
 
 from django.contrib.auth.decorators import login_required
 
-from accounts.decorators import admin_required
+from accounts.decorators import admin_required, admin_or_agent_required
 
 from vehicles.models import Vehicle
 
 from .models import Sale
+
+from django.contrib import messages
+
+from django.contrib.auth.models import User
+
+from django.contrib.auth.hashers import make_password
+
+from payments.models import Payment
+
+from accounts.utils import assign_user_role
+
+from accounts.decorators import agent_required
+
+from .forms import AgentSaleForm
 
 @login_required
 def request_sale(request, pk):
@@ -65,7 +79,8 @@ def sales_list(request):
         }
     )
 
-@admin_required
+@login_required
+@admin_or_agent_required
 def validate_sale(request, pk):
 
     sale = get_object_or_404(
@@ -99,3 +114,141 @@ def pay_sale(request, pk):
     sale.save()
 
     return redirect('sales_list')
+
+@login_required
+@agent_required
+def agent_create_sale(request):
+
+    """
+    Vente terrain par agent
+    """
+
+    form = AgentSaleForm()
+
+    if request.method == 'POST':
+
+        form = AgentSaleForm(request.POST)
+
+        if form.is_valid():
+
+            # =========================
+            # CLIENT
+            # =========================
+
+            username = form.cleaned_data['username']
+
+            email = form.cleaned_data['email']
+
+            password = form.cleaned_data['password']
+
+            # EXISTE ?
+            user_exists = User.objects.filter(
+                username=username
+            ).exists()
+
+            if user_exists:
+
+                messages.error(
+                    request,
+                    "Ce nom utilisateur existe déjà."
+                )
+
+                return redirect(
+                    'agent_create_sale'
+                )
+
+            # CREATION CLIENT
+            user = User.objects.create(
+
+                username=username,
+
+                email=email,
+
+                password=make_password(password)
+
+            )
+
+            # ROLE CLIENT
+            assign_user_role(
+                user,
+                'CLIENT'
+            )
+
+            # =========================
+            # VEHICULE
+            # =========================
+
+            vehicle = form.cleaned_data['vehicle']
+
+            # SECURITE
+            if vehicle.statut != 'DISPONIBLE':
+
+                messages.error(
+                    request,
+                    "Véhicule indisponible."
+                )
+
+                return redirect(
+                    'agent_create_sale'
+                )
+
+            # =========================
+            # CREATION VENTE
+            # =========================
+
+            sale = Sale.objects.create(
+
+                vehicle=vehicle,
+
+                client=user,
+
+                prix_vente=vehicle.prix_vente,
+
+                statut='PAYEE'
+
+            )
+
+            # =========================
+            # PAIEMENT
+            # =========================
+
+            Payment.objects.create(
+
+                rental=None,
+
+                montant=vehicle.prix_vente,
+
+                methode=form.cleaned_data['methode'],
+
+                statut='PAYE'
+
+            )
+
+            # =========================
+            # VEHICULE VENDU
+            # =========================
+
+            vehicle.statut = 'VENDU'
+
+            vehicle.save()
+
+            messages.success(
+                request,
+                "Vente enregistrée avec succès."
+            )
+
+            return redirect(
+                'agent_dashboard'
+            )
+
+    return render(
+
+        request,
+
+        'sales/agent_create_sale.html',
+
+        {
+            'form': form
+        }
+
+    )

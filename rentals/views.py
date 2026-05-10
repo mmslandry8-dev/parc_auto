@@ -21,7 +21,8 @@ from vehicles.models import Vehicle
 
 from accounts.decorators import (
     admin_required,
-    agent_required
+    agent_required,
+    admin_or_agent_required
 )
 
 from payments.models import Payment
@@ -172,7 +173,8 @@ def my_rentals(request):
 
 
 @login_required
-@admin_required
+@login_required
+@admin_or_agent_required
 def validate_rental(request, pk):
 
     """

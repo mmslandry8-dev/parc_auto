@@ -208,3 +208,17 @@ body {
     transform: translateX(5px);
 
 }
+
+/* Si ta navbar est fixed */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+/* IMPORTANT : pousse tout le contenu vers le bas */
+.app-content {
+    padding-top: 80px; /* ajuste selon hauteur navbar */
+}

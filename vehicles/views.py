@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
-from accounts.decorators import admin_required
+from accounts.decorators import (
+    admin_required,
+    admin_or_agent_required
+)
 
 from .forms import VehicleForm
 
@@ -11,7 +14,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 
 @login_required
-@admin_required
+@admin_or_agent_required
 def add_vehicle(request):
 
     """
@@ -95,6 +98,7 @@ def vehicle_list(request):
     # =========================
     # PAGINATION
     # =========================
+    vehicles = Vehicle.objects.all().order_by('-id')
 
     paginator = Paginator(
         vehicles,
@@ -134,7 +138,8 @@ def vehicle_detail(request, pk):
         }
     )
 
-@admin_required
+@login_required
+@admin_or_agent_required
 def delete_vehicle(request, pk):
     """
     Supprimer un véhicule
@@ -146,7 +151,8 @@ def delete_vehicle(request, pk):
 
     return redirect('vehicle_list')
 
-@admin_required
+@login_required
+@admin_or_agent_required
 def update_vehicle(request, pk):
     """
     Modifier un véhicule

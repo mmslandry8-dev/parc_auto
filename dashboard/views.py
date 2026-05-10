@@ -19,11 +19,13 @@ from django.contrib.auth.models import User
 
 from django.db.models import Sum
 
-from django.db.models.functions import ExtractMonth
+from django.db.models.functions import TruncMonth
 
 from django.db.models.functions import ExtractMonth
 
 import json
+
+from django.http import JsonResponse
 
 # HOME
 def home(request):
@@ -39,96 +41,73 @@ def home(request):
 
 
 # DASHBOARD ADMIN
+from django.db.models import Sum
+from django.db.models.functions import TruncMonth
+from django.http import JsonResponse
+
+from payments.models import Payment
+from rentals.models import Rental
+from sales.models import Sale
+from vehicles.models import Vehicle
+
+
 @login_required
 @admin_required
 def admin_dashboard(request):
 
     """
-    Dashboard administrateur dynamique
+    Dashboard administrateur dynamique + analytics
     """
 
     # =========================
     # VEHICULES
     # =========================
-
     total_vehicles = Vehicle.objects.count()
-
-    available_vehicles = Vehicle.objects.filter(
-        statut='DISPONIBLE'
-    ).count()
-
-    rented_vehicles = Vehicle.objects.filter(
-        statut='LOUE'
-    ).count()
-
-    sold_vehicles = Vehicle.objects.filter(
-        statut='VENDU'
-    ).count()
+    available_vehicles = Vehicle.objects.filter(statut='DISPONIBLE').count()
+    rented_vehicles = Vehicle.objects.filter(statut='LOUE').count()
+    sold_vehicles = Vehicle.objects.filter(statut='VENDU').count()
 
     # =========================
     # LOCATIONS
     # =========================
-
     total_rentals = Rental.objects.count()
-
-    pending_rentals = Rental.objects.filter(
-        statut='EN_ATTENTE'
-    ).count()
-
-    validated_rentals = Rental.objects.filter(
-        statut='VALIDEE'
-    ).count()
+    pending_rentals = Rental.objects.filter(statut='EN_ATTENTE').count()
+    validated_rentals = Rental.objects.filter(statut='VALIDEE').count()
 
     # =========================
-    # UTILISATEURS
+    # VENTES
     # =========================
-
-    total_clients = User.objects.filter(
-        groups__name='CLIENT'
-    ).count()
+    total_sales = Sale.objects.count()
+    pending_sales = Sale.objects.filter(statut='EN_ATTENTE').count()
+    paid_sales = Sale.objects.filter(statut='PAYEE').count()
 
     # =========================
-    # REVENUS LOCATIONS
+    # CLIENTS
     # =========================
+    total_clients = User.objects.filter(groups__name='CLIENT').count()
 
+    # =========================
+    # REVENUS TOTAUX
+    # =========================
     rental_revenue = Payment.objects.filter(
-        statut='PAYE'
-    ).aggregate(
-        Sum('montant')
-    )['montant__sum']
+        statut='PAYE',
+        rental__isnull=False
+    ).aggregate(Sum('montant'))['montant__sum'] or 0
 
-    if rental_revenue is None:
-
-        rental_revenue = 0
-
-    # =========================
-    # REVENUS VENTES
-    # =========================
-
-    sales_revenue = Sale.objects.filter(
-        statut='PAYEE'
-    ).aggregate(
-        Sum('prix_vente')
-    )['prix_vente__sum']
-
-    if sales_revenue is None:
-
-        sales_revenue = 0
-
-    # =========================
-    # REVENU TOTAL
-    # =========================
+    sales_revenue = Payment.objects.filter(
+        statut='PAYE',
+        rental__isnull=True
+    ).aggregate(Sum('montant'))['montant__sum'] or 0
 
     total_revenue = rental_revenue + sales_revenue
 
     # =========================
-    # STATISTIQUES MENSUELLES
+    # REVENUS MENSUELS (CHART)
     # =========================
-
-    monthly_payments = Payment.objects.filter(
+    monthly_data = Payment.objects.filter(
         statut='PAYE'
     ).annotate(
-        month=ExtractMonth('created_at')
+        month=TruncMonth('created_at')
     ).values('month').annotate(
         total=Sum('montant')
     ).order_by('month')
@@ -136,15 +115,9 @@ def admin_dashboard(request):
     months = []
     totals = []
 
-    for data in monthly_payments:
-
-        months.append(data['month'])
-
-        totals.append(float(data['total']))
-
-    # =========================
-    # CONTEXT
-    # =========================
+    for item in monthly_data:
+        months.append(item['month'].strftime("%Y-%m"))
+        totals.append(float(item['total']))
 
     context = {
 
@@ -159,19 +132,20 @@ def admin_dashboard(request):
         'pending_rentals': pending_rentals,
         'validated_rentals': validated_rentals,
 
+        # VENTES
+        'total_sales': total_sales,
+        'pending_sales': pending_sales,
+        'paid_sales': paid_sales,
+
         # CLIENTS
         'total_clients': total_clients,
 
         # REVENUS
-        'rental_revenue': rental_revenue,
-        'sales_revenue': sales_revenue,
         'total_revenue': total_revenue,
 
-        # CHARTS
-        'months': json.dumps(months),
-        'totals': json.dumps(totals),
-        # 'months': months,
-        # 'totals': totals,
+        # CHART
+        'months': months,
+        'totals': totals,
 
     }
 

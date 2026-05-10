@@ -29,26 +29,17 @@
 <body>
 
     <!-- NAVBAR -->
-    {% if request.path != '/accounts/register/' and request.path != '/accounts/login/' %}
-
-        {% include 'components/navbar.html' %}
-
-    {% endif %}
+    {% include 'components/navbar.html' %}
 
     <!-- CONTENU -->
-<div class="
-{% if request.path != '/' and request.path != '/admin-dashboard/' and request.path != '/accounts/login/' and request.path != '/accounts/register/' and request.path != '/agent-dashboard/' %}
-    container mt-5 pt-5
-{% endif %}
-">
-    
-    <!-- MESSAGES -->  
-    {% include 'components/messages.html' %}
+    <main class="app-content">
 
-    {% block content %}
-    {% endblock %}
+        {% include 'components/messages.html' %}
 
-</div>
+        {% block content %}
+        {% endblock %}
+
+    </main>
 
     <!-- BACK TO TOP -->
     {% include 'components/back_to_top.html' %}
@@ -56,8 +47,8 @@
     <!-- SCRIPTS -->
     {% include 'components/scripts.html' %}
 
-<!-- CHART JS -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- CHART JS -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </body>
 

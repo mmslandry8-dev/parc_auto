@@ -63,3 +63,31 @@ def client_required(view_func):
         return redirect('home')
 
     return wrapper
+
+def admin_or_agent_required(view_func):
+    """
+    Autorise ADMIN et AGENT
+    """
+
+    def wrapper(request, *args, **kwargs):
+
+        if (
+            request.user.groups.filter(name='ADMIN').exists()
+            or
+            request.user.groups.filter(name='AGENT').exists()
+        ):
+
+            return view_func(
+                request,
+                *args,
+                **kwargs
+            )
+
+        messages.error(
+            request,
+            "Accès réservé aux gestionnaires."
+        )
+
+        return redirect('home')
+
+    return wrapper

@@ -1,22 +1,25 @@
 from django.contrib.auth.models import Group
+from .constants import ROLE_ADMIN, ROLE_AGENT, ROLE_CLIENT
 
 
 def assign_user_role(user, role):
     """
-    Assigne un rôle utilisateur
-    et met automatiquement à jour les groupes.
+    Assigne un rôle utilisateur et synchronise les groupes Django
     """
 
-    # Supprimer anciens groupes
+    # sécurité : uniquement rôles valides
+    allowed_roles = [ROLE_ADMIN, ROLE_AGENT, ROLE_CLIENT]
+
+    if role not in allowed_roles:
+        role = ROLE_CLIENT
+
+    # reset groupes
     user.groups.clear()
 
-    # Récupérer ou créer groupe
-    group, created = Group.objects.get_or_create(
-        name=role
-    )
+    # récupérer ou créer groupe
+    group, created = Group.objects.get_or_create(name=role)
 
-    # Ajouter utilisateur au groupe
+    # assignation
     user.groups.add(group)
 
-    # Sauvegarder
     user.save()

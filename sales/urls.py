@@ -33,4 +33,10 @@ urlpatterns = [
         name='pay_sale'
     ),
 
+    path(
+    'agent/create/',
+    views.agent_create_sale,
+    name='agent_create_sale'
+),
+
 ]

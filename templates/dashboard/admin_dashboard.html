@@ -278,11 +278,9 @@
 </div>
 
 <!-- CHART JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
-
-    const months = JSON.parse('{{ months|escapejs }}');
-
-    const totals = JSON.parse('{{ totals|escapejs }}');
 
     const ctx = document.getElementById('revenueChart');
 
@@ -292,19 +290,17 @@
 
         data: {
 
-            labels: months,
+            labels: JSON.parse('{{ months|escapejs }}'),
 
             datasets: [{
 
                 label: 'Revenus mensuels',
 
-                data: totals,
+                data: JSON.parse('{{ totals|escapejs }}'),
 
                 borderWidth: 3,
 
-                tension: 0.4,
-
-                fill: true
+                tension: 0.4
 
             }]
 
@@ -319,16 +315,6 @@
                 legend: {
 
                     display: true
-
-                }
-
-            },
-
-            scales: {
-
-                y: {
-
-                    beginAtZero: true
 
                 }
 

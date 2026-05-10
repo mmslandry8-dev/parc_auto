@@ -28,13 +28,30 @@
                 <h4>
                     {{ vehicle.prix_location }} FCFA / jour
                 </h4>
+                <h5 class="text-success">
+                    Prix vente : {{ vehicle.prix_vente }} FCFA
+                </h5>
 
                 <h5>
                     Statut : {{ vehicle.statut }}
                 </h5>
-                <a href="{% url 'create_rental' vehicle.id %}" class="btn btn-dark mt-3">
-                    Réserver ce véhicule
-                </a>
+                {% if vehicle.statut == 'DISPONIBLE' %}
+
+                    <a
+                        href="{% url 'create_rental' vehicle.id %}"
+                        class="btn btn-dark mt-3"
+                    >
+                        Louer ce véhicule
+                    </a>
+
+                    <a
+                        href="{% url 'request_sale' vehicle.id %}"
+                        class="btn btn-success mt-3"
+                    >
+                        Acheter ce véhicule
+                    </a>
+
+                {% endif %}
             </div>
 
         </div>

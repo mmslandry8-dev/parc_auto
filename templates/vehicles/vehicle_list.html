@@ -123,6 +123,10 @@
                             {{ vehicle.prix_location }} FCFA / jour
                         </p>
 
+                        <p class="fw-bold text-success">
+                            Vente : {{ vehicle.prix_vente }} FCFA
+                        </p>
+
                         <!-- BADGE STATUT -->
                         <span class="badge bg-success">
                             {{ vehicle.statut }}
@@ -137,21 +141,43 @@
                                 Voir
                             </a>
 
-                            {% if user.groups.all.0.name == 'ADMIN' %}
+                            {% if vehicle.statut == 'DISPONIBLE' %}
 
                                 <a
-                                    href="{% url 'update_vehicle' vehicle.id %}"
-                                    class="btn btn-sm btn-warning"
+                                    href="{% url 'create_rental' vehicle.id %}"
+                                    class="btn btn-sm btn-dark"
                                 >
-                                    Modifier
+                                    Louer
                                 </a>
 
                                 <a
-                                    href="{% url 'delete_vehicle' vehicle.id %}"
-                                    class="btn btn-sm btn-danger"
+                                    href="{% url 'request_sale' vehicle.id %}"
+                                    class="btn btn-sm btn-success"
                                 >
-                                    Supprimer
+                                    Acheter
                                 </a>
+
+                            {% endif %}
+
+                            {% if user.is_authenticated %}
+
+                                {% if user.groups.first.name == 'ADMIN' or user.groups.first.name == 'AGENT' %}
+
+                                    <a
+                                        href="{% url 'update_vehicle' vehicle.id %}"
+                                        class="btn btn-sm btn-warning"
+                                    >
+                                        Modifier
+                                    </a>
+
+                                    <a
+                                        href="{% url 'delete_vehicle' vehicle.id %}"
+                                        class="btn btn-sm btn-danger"
+                                    >
+                                        Supprimer
+                                    </a>
+
+                                {% endif %}
 
                             {% endif %}
 
@@ -159,6 +185,16 @@
 
                     </div>
 
+                </div>
+
+            </div>
+
+        {% empty %}
+
+            <div class="col-12">
+
+                <div class="alert alert-warning text-center">
+                    Aucun véhicule trouvé.
                 </div>
 
             </div>
@@ -178,16 +214,16 @@
 
             {% if vehicles.has_previous %}
 
-            <li class="page-item">
+                <li class="page-item">
 
-                <a class="page-link"
-                   href="?page={{ vehicles.previous_page_number }}">
+                    <a class="page-link"
+                       href="?page={{ vehicles.previous_page_number }}">
 
-                    Précédent
+                        Précédent
 
-                </a>
+                    </a>
 
-            </li>
+                </li>
 
             {% endif %}
 
@@ -203,16 +239,16 @@
 
             {% if vehicles.has_next %}
 
-            <li class="page-item">
+                <li class="page-item">
 
-                <a class="page-link"
-                   href="?page={{ vehicles.next_page_number }}">
+                    <a class="page-link"
+                       href="?page={{ vehicles.next_page_number }}">
 
-                    Suivant
+                        Suivant
 
-                </a>
+                    </a>
 
-            </li>
+                </li>
 
             {% endif %}
 

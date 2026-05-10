@@ -1,69 +1,59 @@
-<div class="col-md-2 bg-dark text-white min-vh-100 p-4 sidebar">
+<div class="col-md-2 bg-dark text-white min-vh-100 p-4">
 
-    <h4 class="mb-4 fw-bold">
-        {% if user.groups.all.0.name == 'ADMIN' %}
-            🚗 Admin
-        {% elif user.groups.all.0.name == 'AGENT' %}
-            👨‍💼 Agent
-        {% endif %}
-    </h4>
+    <h4 class="mb-4">🚗 Menu</h4>
 
     <ul class="nav flex-column">
 
-        <li class="nav-item mb-2">
+        <!-- ADMIN -->
+        {% if user_role == 'ADMIN' %}
 
-            <a class="nav-link sidebar-link"
-               href="{% url 'admin_dashboard' %}">
+            <li class="nav-item mb-2">
+                <a class="nav-link text-white" href="{% url 'admin_dashboard' %}">
+                    Dashboard Admin
+                </a>
+            </li>
 
-                📊 Dashboard
+        {% endif %}
 
-            </a>
+        <!-- AGENT -->
+        {% if user_role == 'AGENT' %}
 
-        </li>
+            <li class="nav-item mb-2">
+                <a class="nav-link text-white" href="{% url 'agent_dashboard' %}">
+                    Dashboard Agent
+                </a>
+            </li>
 
-        <li class="nav-item mb-2">
+            <li class="nav-item mb-2">
+                <a class="nav-link text-white" href="{% url 'agent_create_rental' %}">
+                    Location terrain
+                </a>
+            </li>
 
-            <a class="nav-link sidebar-link"
-               href="{% url 'vehicle_list' %}">
+            <li class="nav-item mb-2">
+                <a class="nav-link text-white" href="{% url 'agent_create_sale' %}">
+                    Vente terrain
+                </a>
+            </li>
 
-                🚘 Véhicules
+        {% endif %}
 
-            </a>
+        <!-- CLIENT -->
+        {% if user_role == 'CLIENT' %}
 
-        </li>
+            <li class="nav-item mb-2">
+                <a class="nav-link text-white" href="{% url 'my_rentals' %}">
+                    Mes locations
+                </a>
+            </li>
 
-        <li class="nav-item mb-2">
+            <li class="nav-item mb-2">
+                <a class="nav-link text-white" href="{% url 'my_sales' %}">
+                    Mes achats
+                </a>
+            </li>
 
-            <a class="nav-link sidebar-link"
-               href="{% url 'my_rentals' %}">
-
-                📅 Locations
-
-            </a>
-
-        </li>
-
-        <li class="nav-item mb-2">
-
-            <a class="nav-link sidebar-link"
-               href="#">
-
-                💰 Ventes
-
-            </a>
-
-        </li>
-
-        <li class="nav-item mb-2">
-
-            <a class="nav-link sidebar-link"
-               href="#">
-
-                👥 Utilisateurs
-
-            </a>
-
-        </li>
+        {% endif %}
 
     </ul>
 
