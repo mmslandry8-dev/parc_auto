@@ -3,6 +3,8 @@ from django.core.exceptions import ValidationError
 
 from .models import Rental
 
+from django.contrib.auth.models import User
+
 
 class RentalForm(forms.ModelForm):
 
@@ -69,8 +71,32 @@ class AgentRentalForm(forms.Form):
     Formulaire location terrain agent
     """
 
-    # CLIENT
+    # =====================================
+    # CLIENT EXISTANT
+    # =====================================
+
+    existing_client = forms.ModelChoiceField(
+
+        queryset=User.objects.filter(
+            groups__name='CLIENT'
+        ),
+
+        required=False,
+
+        widget=forms.Select(
+            attrs={
+                'class': 'form-select'
+            }
+        )
+    )
+
+    # =====================================
+    # NOUVEAU CLIENT
+    # =====================================
+
     username = forms.CharField(
+
+        required=False,
 
         max_length=150,
 
@@ -84,6 +110,8 @@ class AgentRentalForm(forms.Form):
 
     email = forms.EmailField(
 
+        required=False,
+
         widget=forms.EmailInput(
             attrs={
                 'class': 'form-control',
@@ -94,15 +122,20 @@ class AgentRentalForm(forms.Form):
 
     password = forms.CharField(
 
+        required=False,
+
         widget=forms.PasswordInput(
             attrs={
                 'class': 'form-control',
-                'placeholder': 'Mot de passe client'
+                'placeholder': 'Mot de passe'
             }
         )
     )
 
+    # =====================================
     # VEHICULE
+    # =====================================
+
     vehicle = forms.ModelChoiceField(
 
         queryset=None,
@@ -114,7 +147,10 @@ class AgentRentalForm(forms.Form):
         )
     )
 
+    # =====================================
     # DATES
+    # =====================================
+
     date_debut = forms.DateField(
 
         widget=forms.DateInput(
@@ -149,9 +185,47 @@ class AgentRentalForm(forms.Form):
 
         cleaned_data = super().clean()
 
+        existing_client = cleaned_data.get(
+            'existing_client'
+        )
+
+        username = cleaned_data.get('username')
+
+        email = cleaned_data.get('email')
+
+        password = cleaned_data.get('password')
+
         date_debut = cleaned_data.get('date_debut')
 
         date_fin = cleaned_data.get('date_fin')
+
+        # =====================================
+        # CLIENT VALIDATION
+        # =====================================
+
+        if not existing_client:
+
+            if not username:
+
+                raise ValidationError(
+                    "Nom client obligatoire."
+                )
+
+            if not email:
+
+                raise ValidationError(
+                    "Email obligatoire."
+                )
+
+            if not password:
+
+                raise ValidationError(
+                    "Mot de passe obligatoire."
+                )
+
+        # =====================================
+        # DATES VALIDATION
+        # =====================================
 
         if date_debut and date_fin:
 

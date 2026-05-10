@@ -222,8 +222,14 @@ def agent_create_rental(request):
         if form.is_valid():
 
             # CLIENT
+            existing_client = form.cleaned_data[
+                'existing_client'
+            ]
+
             username = form.cleaned_data['username']
+
             email = form.cleaned_data['email']
+
             password = form.cleaned_data['password']
 
             # VEHICULE
@@ -237,28 +243,42 @@ def agent_create_rental(request):
             # CREATION CLIENT
             # =========================
 
-            user, created = User.objects.get_or_create(
+            # =========================
+            # CLIENT EXISTANT
+            # =========================
 
-                username=username,
+            if existing_client:
 
-                defaults={
-                    'email': email
-                }
+                user = existing_client
 
-            )
+            # =========================
+            # NOUVEAU CLIENT
+            # =========================
 
-            if created:
+            else:
 
-                user.set_password(password)
+                user, created = User.objects.get_or_create(
 
-                user.save()
+                    username=username,
 
-                # AJOUT GROUPE CLIENT
-                client_group = Group.objects.get(
-                    name='CLIENT'
+                    defaults={
+                        'email': email
+                    }
+
                 )
 
-                user.groups.add(client_group)
+                if created:
+
+                    user.set_password(password)
+
+                    user.save()
+
+                    # GROUPE CLIENT
+                    client_group = Group.objects.get(
+                        name='CLIENT'
+                    )
+
+                    user.groups.add(client_group)
 
             conflits = Rental.objects.filter(
 
@@ -285,6 +305,16 @@ def agent_create_rental(request):
                 return redirect(
                     'agent_create_rental'
                 )   
+            if vehicle.statut == 'VENDU':
+
+                messages.error(
+                    request,
+                    "Ce véhicule est déjà vendu."
+                )
+
+                return redirect(
+                    'agent_create_rental'
+                )
 
             # =========================
             # CALCUL PRIX
